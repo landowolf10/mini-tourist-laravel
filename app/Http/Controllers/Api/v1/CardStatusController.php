@@ -42,20 +42,29 @@ class CardStatusController extends Controller
 
             // Convert the input date to a Carbon instance
             $date = Carbon::parse($request->input('date'));
-
             // Call the repository method to get the count data
             $countData = $this->cardStatusRepository->countByStatusAndDate($date);
 
-            if (count($countData) > 0) {
+            /*if (count($countData) > 0) {
                 return response()->json($countData[0]); // Return the first element as an object
-            }
+            }*/
 
             // Return the result as a JSON response
-            return response()->json(['visited_count' => 0, 'downloaded_count' => 0], 200);
+            return response()->json([
+                //'date' => $date->format('Y-m-d'),
+                'visited_count' => $countData['visited_count'],
+                'downloaded_count' => $countData['downloaded_count']
+            ]);
 
         } catch (Exception $e) {
             // Handle any exceptions and return an error response
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'error' => $e->getMessage(),
+                'debug' => [
+                    'input_date' => $request->date ?? null,
+                    'expected_format' => 'YYYY-MM-DD'
+                ]
+            ], 500);
         }
     }
 

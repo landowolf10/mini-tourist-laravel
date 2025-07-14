@@ -32,28 +32,33 @@ class MemberController extends Controller
         $email = $validatedData['email'];
         $password = $validatedData['password'];
 
-        $member = $this->memberRepository->authenticateAdmin($email, $password);
-
-        if ($member->role == 'admin') {
+        // First verify if it's admin user
+        $adminMember = $this->memberRepository->authenticateAdmin($email, $password);
+        
+        if ($adminMember) {
             return response()->json([
-                'id' => $member['id'],
-                'email' => $member['email'],
-                'role' => $member['role']
+                'id' => $adminMember->id,
+                'email' => $adminMember->email,
+                'role' => $adminMember->role
             ], 200);
         }
-        else 
-        {
-            $member = $this->memberRepository->authenticate($email, $password);
 
+        //If not admin, then verify is a normal user
+        $member = $this->memberRepository->authenticate($email, $password);
+        
+        if ($member) {
             return response()->json([
                 'id' => $member->id,
-                'card_id' => $member->card_id, // This is coming from the query, not from the model
+                'cardid' => $member->cardid,
                 'email' => $member->email,
                 'role' => $member->role
             ], 200);
         }
 
-        // Return a response for failed authentication
-        return response()->json(['error' => 'Invalid email or password'], 401);
+        // If no user was found
+        return response()->json([
+            'error' => 'Unauthorized',
+            'message' => 'The provided credentials are incorrect'
+        ], 401);
     }
 }

@@ -15,20 +15,19 @@ class MemberRepositoryImp implements MemberRepositoryInterface
 
     public function authenticate($email, $password)
     {
-            return DB::table('members AS m')
-                ->selectRaw("
-                    c.cardid AS card_id, m.id, m.email, m.role
-                ")
-                ->join('cards AS c', 'c.memberid', '=', 'm.id')
-                ->where('m.email', $email)
-                ->where('m.password', $password)
-                ->first();
+        return DB::table('members AS m')
+            ->select('c.cardid', 'm.id', 'm.email', 'm.role')
+            ->join('cards AS c', 'c.memberid', '=', 'm.id')
+            ->where('m.email', $email)
+            ->where('m.password', $password)
+            ->first();
     }
 
     public function authenticateAdmin($email, $password)
     {
         return Members::where('email', $email)
                     ->where('password', $password)  // Make sure the password is hashed if necessary
+                    ->where('role', 'admin')
                     ->select('id', 'email', 'role')
                     ->first();  // Use first() to get a single result
 

@@ -109,9 +109,9 @@ class CardRepositoryImp implements CardRepositoryInterface
         // Configure Cloudinary
         $cloudinary = new Cloudinary([
             'cloud' => [
-                'cloud_name' => 'dbwgqd2ap',
-                'api_key' => '916662365919522',
-                'api_secret' => 'jA_BDVGQcd0BAkzbmx-hD1q6-SA',
+                'cloud_name' => 'dqvs83nao',
+                'api_key' => '532562219644367',
+                'api_secret' => 'FVCBgcmwipQubGt7jIH1Ej5RJQ8',
             ],
         ]);
     

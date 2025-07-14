@@ -16,7 +16,7 @@ Route::prefix('v1')->group(function () {
     Route::get('cards/category/count', [CardController::class, 'countCardsByCategory']);
 
     //Cards status routes
-    Route::post('card/register_status', [CardStatusController::class, 'insertCardStatus']);
+    Route::post('cards/register_status', [CardStatusController::class, 'insertCardStatus']);
     Route::get('cards/count/general', [CardStatusController::class, 'countByStatus']);
     Route::get('cards/count/date', [CardStatusController::class, 'countByStatusAndDate']);
     Route::get('cards/count', [CardStatusController::class, 'countByStatusAndDateBetween']);

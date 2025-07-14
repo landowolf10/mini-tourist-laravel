@@ -23,14 +23,22 @@ class CardStatusRepositoryImp implements CardStatusRepositoryInterface
 
     public function countByStatusAndDate(Carbon $date)
     {
-        return CardsStatus::selectRaw("
-           SUM(CASE WHEN status = 'Visited' THEN 1 ELSE 0 END) AS visited_count,
-           SUM(CASE WHEN status = 'Downloaded' THEN 1 ELSE 0 END) AS downloaded_count
-        ")
-        ->whereIn('status', ['Visited', 'Downloaded'])
-        ->whereDate('date', $date)
-        ->groupBy('date') // Grouping by the date
-        ->get();
+        // Usamos DB::select para obtener resultados directos
+        $results = DB::select("
+            SELECT 
+                COALESCE(SUM(CASE WHEN status = 'Visited' THEN 1 ELSE 0 END), 0) AS visited_count,
+                COALESCE(SUM(CASE WHEN status = 'Downloaded' THEN 1 ELSE 0 END), 0) AS downloaded_count
+            FROM card_status
+            WHERE status IN ('Visited', 'Downloaded')
+            AND DATE(date) = ?
+            GROUP BY DATE(date)
+        ", [$date->format('Y-m-d')]);
+
+        // Siempre devolvemos los conteos como enteros
+        return [
+            'visited_count' => $results ? (int)$results[0]->visited_count : 0,
+            'downloaded_count' => $results ? (int)$results[0]->downloaded_count : 0
+        ];
     }
 
     public function countByStatusAndDateBetween(Carbon $startDate, Carbon $endDate)
