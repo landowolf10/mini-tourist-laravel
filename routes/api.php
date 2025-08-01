@@ -13,6 +13,9 @@ Route::prefix('v1')->group(function () {
     Route::get('cards/card', [CardController::class, 'getCardNameByCategory']);
     Route::get('cards/category', [CardController::class, 'getCardsByCategory']);
     Route::get('cards/premium', [CardController::class, 'getCardsByPremium']);
+    Route::get('cards/place', [CardController::class, 'getCardsByPlace']);
+    Route::get('cards/place/carousel', [CardController::class, 'getCardsByPlaceNotNull']);
+    Route::get('cards/carousel', [CardController::class, 'getCardsByPlaceNull']);
     Route::get('cards/category/count', [CardController::class, 'countCardsByCategory']);
 
     //Cards status routes

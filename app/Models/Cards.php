@@ -17,6 +17,7 @@ class Cards extends Model
         'memberid',
         'cardname',
         'city',
+        'place',
         'category',
         'premium',
         'image',

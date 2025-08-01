@@ -58,6 +58,24 @@ class CardRepositoryImp implements CardRepositoryInterface
         return Cards::where('premium', $isPremium)->get();
     }
 
+    public function getCardsByPlaceNotNull()
+    {
+        // Count the number of clients with the given category
+        return Cards::whereNotNull('place')->get();
+    }
+
+    public function getCardsByPlaceNull()
+    {
+        // Count the number of clients with the given category
+        return Cards::whereNull('place')->get();
+    }
+
+    public function getCardsByPlace(string $place)
+    {
+        // Count the number of clients with the given category
+        return Cards::where('place', $place)->get();
+    }
+
     public function countCardsByCategory(string $category)
     {
         // Count the number of clients with the given category

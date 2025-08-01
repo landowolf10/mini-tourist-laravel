@@ -70,6 +70,31 @@ class CardController extends Controller
         }
     }
 
+    public function getCardsByPlaceNotNull()
+    {
+        $cards = $this->cardRepository->getCardsByPlaceNotNull();
+        return response()->json($cards);
+    }
+
+    public function getCardsByPlaceNull()
+    {
+        $cards = $this->cardRepository->getCardsByPlaceNull();
+        return response()->json($cards);
+    }
+
+    public function getCardsByPlace(Request $request)
+    {
+        // Get the category from the query parameters
+        $place = $request->query('place');
+        
+        if ($place) {
+            $cards = $this->cardRepository->getCardsByPlace($place);
+            return response()->json($cards);
+        } else {
+            return response()->json(['error' => 'place parameter is missing'], 400);
+        }
+    }
+
     public function countCardsByCategory(Request $request)
     {
         // Get the category from the query parameters
