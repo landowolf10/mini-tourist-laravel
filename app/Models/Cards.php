@@ -22,6 +22,8 @@ class Cards extends Model
         'premium',
         'image',
         'back_image',
+        'lat',
+        'long',
         'creation_date',
         'update_date'
     ];

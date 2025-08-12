@@ -80,26 +80,26 @@ class CardStatusRepositoryImp implements CardStatusRepositoryInterface
     public function countByDateAndStatusAndCardId($cardId, Carbon $date)
     {
         return CardsStatus::selectRaw("
-            date,
-            SUM(CASE WHEN status = 'Visited' THEN 1 ELSE 0 END) AS visited_count,
-            SUM(CASE WHEN status = 'Downloaded' THEN 1 ELSE 0 END) AS downloaded_count
+            DATE(date) as date,
+            COALESCE(SUM(CASE WHEN status = 'Visited' THEN 1 ELSE 0 END), 0) AS visited_count,
+            COALESCE(SUM(CASE WHEN status = 'Downloaded' THEN 1 ELSE 0 END), 0) AS downloaded_count
         ")
         ->where('cardid', $cardId)
         ->whereIn('status', ['Visited', 'Downloaded'])
         ->whereDate('date', $date)
-        ->groupBy('date') 
+        ->groupByRaw('DATE(date)') // Usar groupByRaw para función DATE
         ->get();
     }
 
     public function countByStatusAndCardIdAndDateBetween($cardId, Carbon $startDate, Carbon $endDate)
     {
         return CardsStatus::selectRaw("
-           SUM(CASE WHEN status = 'Visited' THEN 1 ELSE 0 END) AS visited_count,
-           SUM(CASE WHEN status = 'Downloaded' THEN 1 ELSE 0 END) AS downloaded_count
+            COALESCE(SUM(CASE WHEN status = 'Visited' THEN 1 ELSE 0 END), 0) AS visited_count,
+            COALESCE(SUM(CASE WHEN status = 'Downloaded' THEN 1 ELSE 0 END), 0) AS downloaded_count
         ")
         ->where('cardid', $cardId)
         ->whereIn('status', ['Visited', 'Downloaded'])
-        ->whereBetween('date', [$startDate, $endDate])
+        ->whereBetween(DB::raw('DATE(`date`)'), [$startDate->toDateString(), $endDate->toDateString()])
         ->get();
     }
 

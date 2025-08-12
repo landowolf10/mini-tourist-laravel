@@ -10,12 +10,13 @@ Route::prefix('v1')->group(function () {
     //Cards routes
     Route::get('cards', [CardController::class, 'getAllCards']);
     Route::get('card/{cardId}', [CardController::class, 'getCardById']);
+    Route::get('card/lat-long/{cardId}', [CardController::class, 'getLatAndLongdByCardId']);
     Route::get('cards/card', [CardController::class, 'getCardNameByCategory']);
     Route::get('cards/category', [CardController::class, 'getCardsByCategory']);
     Route::get('cards/premium', [CardController::class, 'getCardsByPremium']);
     Route::get('cards/place', [CardController::class, 'getCardsByPlace']);
-    Route::get('cards/place/carousel', [CardController::class, 'getCardsByPlaceNotNull']);
-    Route::get('cards/carousel', [CardController::class, 'getCardsByPlaceNull']);
+    Route::get('cards/carousel', [CardController::class, 'getCardsByIsPlace']);
+    Route::get('cards/place/category', [CardController::class, 'getCardsByPlacesPerCategory']);
     Route::get('cards/category/count', [CardController::class, 'countCardsByCategory']);
 
     //Cards status routes

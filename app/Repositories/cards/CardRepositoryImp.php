@@ -4,6 +4,7 @@ namespace App\Repositories\cards;
 
 use App\Models\Members;
 use App\Models\Cards;
+use App\Models\PlacesPerCategory;
 use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
@@ -58,22 +59,22 @@ class CardRepositoryImp implements CardRepositoryInterface
         return Cards::where('premium', $isPremium)->get();
     }
 
-    public function getCardsByPlaceNotNull()
+    public function getCardsByIsPlace(string $isPlace)
     {
-        // Count the number of clients with the given category
-        return Cards::whereNotNull('place')->get();
-    }
-
-    public function getCardsByPlaceNull()
-    {
-        // Count the number of clients with the given category
-        return Cards::whereNull('place')->get();
+        return Cards::where('place', $isPlace)->get();
     }
 
     public function getCardsByPlace(string $place)
     {
         // Count the number of clients with the given category
         return Cards::where('place', $place)->get();
+    }
+
+    public function getCardsByPlacesPerCategory($ownerId, string $category)
+    {
+        return PlacesPerCategory::where('owner_id', $ownerId)
+                    ->where('category', $category)
+                    ->get();
     }
 
     public function countCardsByCategory(string $category)
@@ -121,6 +122,13 @@ class CardRepositoryImp implements CardRepositoryInterface
             // Handle exceptions and return an appropriate response or throw a custom exception
             throw new RuntimeException('Failed to save client data: ' . $e->getMessage());
         }
+    }
+
+    public function getLatAndLongdByCardId($cardId)
+    {
+        return Cards::select('lat', 'long')
+            ->where('cardid', $cardId)
+            ->get();
     }
 
     private function saveImage($file, $category, $isPremium) {

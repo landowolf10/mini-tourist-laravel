@@ -70,16 +70,16 @@ class CardController extends Controller
         }
     }
 
-    public function getCardsByPlaceNotNull()
+    public function getCardsByIsPlace(Request $request)
     {
-        $cards = $this->cardRepository->getCardsByPlaceNotNull();
-        return response()->json($cards);
-    }
-
-    public function getCardsByPlaceNull()
-    {
-        $cards = $this->cardRepository->getCardsByPlaceNull();
-        return response()->json($cards);
+        $isPlace = $request->query('is_place');
+        
+        if ($isPlace) {
+            $cards = $this->cardRepository->getCardsByIsPlace($isPlace);
+            return response()->json($cards);
+        } else {
+            return response()->json(['error' => 'is_place parameter is missing'], 400);
+        }
     }
 
     public function getCardsByPlace(Request $request)
@@ -92,6 +92,20 @@ class CardController extends Controller
             return response()->json($cards);
         } else {
             return response()->json(['error' => 'place parameter is missing'], 400);
+        }
+    }
+
+    public function getCardsByPlacesPerCategory(Request $request)
+    {
+        // Get the category from the query parameters
+        $ownerId = $request->query('owner_id');
+        $category = $request->query('category');
+        
+        if ($ownerId && $category) {
+            $cards = $this->cardRepository->getCardsByPlacesPerCategory($ownerId, $category);
+            return response()->json($cards);
+        } else {
+            return response()->json(['error' => 'owner_id and category parameters are missing'], 400);
         }
     }
 
@@ -132,6 +146,12 @@ class CardController extends Controller
             // Handle any exceptions and return an error response
             return response()->json(['error' => 'Failed to register client.', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function getLatAndLongdByCardId($cardId)
+    {
+        $card = $this->cardRepository->getLatAndLongdByCardId($cardId);
+        return response()->json($card[0]);
     }
 
     /**

@@ -10,11 +10,12 @@ interface CardRepositoryInterface
     public function getCardNameByCategory(string $category);
     public function getCardsByCategory(string $category);
     public function getCardsByPremium(string $isPremium);
-    public function getCardsByPlaceNotNull();
-    public function getCardsByPlaceNull();
+    public function getCardsByIsPlace(string $isPlace);
     public function getCardsByPlace(string $place);
+    public function getCardsByPlacesPerCategory($ownerId, string $category);
     public function countCardsByCategory(string $category);
     public function registerMember(array $cardData);
+    public function getLatAndLongdByCardId($cardId);
     /*public function updateClient($id, array $clientData);
     public function deleteClient($id);*/
 }
