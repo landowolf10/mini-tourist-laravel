@@ -10,10 +10,10 @@ class Cards extends Model
     use HasFactory;
 
     protected $table = 'cards';
+    protected $primaryKey = 'cardid';
 
     public $timestamps = false;
     protected $fillable = [
-        'cardid',
         'memberid',
         'cardname',
         'city',

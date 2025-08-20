@@ -16,6 +16,7 @@ interface CardRepositoryInterface
     public function countCardsByCategory(string $category);
     public function registerMember(array $cardData);
     public function getLatAndLongdByCardId($cardId);
+    public function getCardIdAndMemberIdByCardName(string $cardName);
     /*public function updateClient($id, array $clientData);
     public function deleteClient($id);*/
 }

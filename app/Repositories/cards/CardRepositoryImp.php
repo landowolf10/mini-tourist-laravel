@@ -100,11 +100,14 @@ class CardRepositoryImp implements CardRepositoryInterface
             $card->memberid = $memberId;
             $card->cardname = $cardData['cardName'];
             $card->city = $cardData['city'];
+            $card->place = $cardData['place'];
             $card->category = $cardData['category'];
             $card->premium = $cardData['premium'];
+            $card->lat = $cardData['lat'];
+            $card->long = $cardData['long'];
             $card->creation_date = now();
             $card->update_date = null;
-    
+
             // Handle image file upload if it exists
             if (isset($cardData['imageFile']) && isset($cardData['backImageFile'])) {
                 $imagePath = $this->saveImage($cardData['imageFile'], $card->category, $card->premium);
@@ -115,6 +118,39 @@ class CardRepositoryImp implements CardRepositoryInterface
     
             // Save the client details along with the image path
             $card->save();
+
+            $isBeach = $card->place;
+            $belongsToBeach = $cardData['belongsToBeach'] ?? 'No';
+
+            //Necesito primero validar si es una playa (place), si es No, 
+            //ahora validar si pertenece a una playa, si no, se debe guardar sin
+            //owner_id en places_per_category, si si, se guarda el owner_id
+            //Creates entry to the places_per_category table if place is no
+            if ($isBeach == 'No') {
+                $placesPerCategory = new PlacesPerCategory();
+                // Retrieve the id of the newly saved card
+                $cardId = $card->cardid;
+                $placeName = $card->cardname;
+                $category = $card->category;
+
+                if ($belongsToBeach == 'Yes') {
+                    $beachCardName = $cardData['beachCardName'] ?? null;
+
+                    if ($beachCardName) {
+                        $beachData = $this->getCardIdAndMemberIdByCardName($beachCardName)->first();
+
+                        if ($beachData) {
+                            // Asignamos el dueño correcto (la playa)
+                            $placesPerCategory->owner_id = $beachData->cardid; //Beach card id
+                            $placesPerCategory->card_id = $cardId; //Card id from cards table
+                            $placesPerCategory->place_name = $placeName;
+                            $placesPerCategory->category = $category;
+
+                            $placesPerCategory->save();
+                        }
+                    }
+                }
+            }
     
             // Return the saved client object (you can return it directly or as JSON)
             return $card;
@@ -128,6 +164,13 @@ class CardRepositoryImp implements CardRepositoryInterface
     {
         return Cards::select('lat', 'long')
             ->where('cardid', $cardId)
+            ->get();
+    }
+
+    public function getCardIdAndMemberIdByCardName(string $cardName)
+    {
+        return Cards::select('cardid')
+            ->where('cardname', $cardName)
             ->get();
     }
 
