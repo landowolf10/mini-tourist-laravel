@@ -105,6 +105,11 @@ class CardRepositoryImp implements CardRepositoryInterface
             $card->premium = $cardData['premium'];
             $card->lat = $cardData['lat'];
             $card->long = $cardData['long'];
+            $card->schedule = $cardData['schedule'];
+            $card->phone_number = $cardData['phone_number'];
+            $card->web = $cardData['web'];
+            $card->social_media = $cardData['social_media'];
+            $card->characteristics = $cardData['characteristics'];
             $card->creation_date = now();
             $card->update_date = null;
 
@@ -162,7 +167,7 @@ class CardRepositoryImp implements CardRepositoryInterface
 
     public function getLatAndLongdByCardId($cardId)
     {
-        return Cards::select('lat', 'long')
+        return Cards::select('lat', 'long', 'schedule', 'phone_number', 'web', 'social_media', 'characteristics')
             ->where('cardid', $cardId)
             ->get();
     }

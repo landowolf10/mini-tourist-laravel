@@ -24,6 +24,11 @@ class Cards extends Model
         'back_image',
         'lat',
         'long',
+        'schedule',
+        'phone_number',
+        'web',
+        'social_media',
+        'characteristics',
         'creation_date',
         'update_date'
     ];
